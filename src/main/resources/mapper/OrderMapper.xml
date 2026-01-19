@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mall.mapper.OrderMapper">
+
+    <resultMap id="BaseResultMap" type="com.mall.domain.transaction.Order">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="order_no" property="orderNo" jdbcType="VARCHAR"/>
+        <result column="user_id" property="userId" jdbcType="BIGINT"/>
+        <result column="merchant_id" property="merchantId" jdbcType="BIGINT"/>
+        <result column="sku" property="sku" jdbcType="VARCHAR"/>
+        <result column="product_name" property="productName" jdbcType="VARCHAR"/>
+        <result column="unit_price" property="unitPrice" jdbcType="DECIMAL"/>
+        <result column="quantity" property="quantity" jdbcType="INTEGER"/>
+        <result column="total_amount" property="totalAmount" jdbcType="DECIMAL"/>
+        <result column="status" property="status" jdbcType="VARCHAR"/>
+        <result column="currency" property="currency" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="version" property="version" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, order_no, user_id, merchant_id, sku, product_name, unit_price, quantity,
+        total_amount, status, currency, create_time, update_time, version
+    </sql>
+
+    <insert id="insert" parameterType="com.mall.domain.transaction.Order" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO order_info (order_no, user_id, merchant_id, sku, product_name, unit_price, quantity,
+                               total_amount, status, currency, create_time, update_time, version)
+        VALUES (#{orderNo}, #{userId}, #{merchantId}, #{sku}, #{productName}, #{unitPrice}, #{quantity},
+                #{totalAmount}, #{status}, #{currency},
+                #{createTime}, #{updateTime}, #{version})
+    </insert>
+
+    <update id="updateById" parameterType="com.mall.domain.transaction.Order">
+        UPDATE order_info
+        SET order_no = #{orderNo},
+            user_id = #{userId},
+            merchant_id = #{merchantId},
+            sku = #{sku},
+            product_name = #{productName},
+            unit_price = #{unitPrice},
+            quantity = #{quantity},
+            total_amount = #{totalAmount},
+            status = #{status},
+            currency = #{currency},
+            update_time = #{updateTime},
+            version = #{version}
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM order_info
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectByOrderNo" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM order_info
+        WHERE order_no = #{orderNo}
+    </select>
+
+    <select id="selectByUserId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM order_info
+        WHERE user_id = #{userId}
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="selectByMerchantId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM order_info
+        WHERE merchant_id = #{merchantId}
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="sumPaidOrderAmountByMerchantAndTimeRange" resultType="java.math.BigDecimal">
+        SELECT COALESCE(SUM(total_amount), 0)
+        FROM order_info
+        WHERE merchant_id = #{merchantId}
+          AND status = 'PAID'
+          AND create_time >= #{startTime}
+          AND create_time &lt; #{endTime}
+    </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM order_info
+        ORDER BY create_time DESC
+    </select>
+
+</mapper>

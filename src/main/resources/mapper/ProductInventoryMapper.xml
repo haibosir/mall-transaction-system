@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mall.mapper.ProductInventoryMapper">
+
+    <resultMap id="BaseResultMap" type="com.mall.domain.merchant.ProductInventory">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="merchant_id" property="merchantId" jdbcType="BIGINT"/>
+        <result column="sku" property="sku" jdbcType="VARCHAR"/>
+        <result column="product_name" property="productName" jdbcType="VARCHAR"/>
+        <result column="price" property="price" jdbcType="DECIMAL"/>
+        <result column="quantity" property="quantity" jdbcType="INTEGER"/>
+        <result column="currency" property="currency" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="version" property="version" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, merchant_id, sku, product_name, price, quantity, currency, create_time, update_time, version
+    </sql>
+
+    <insert id="insert" parameterType="com.mall.domain.merchant.ProductInventory" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO product_inventory (merchant_id, sku, product_name, price, quantity, currency, create_time, update_time, version)
+        VALUES (#{merchantId}, #{sku}, #{productName}, #{price}, #{quantity}, #{currency}, #{createTime}, #{updateTime}, #{version})
+    </insert>
+
+    <update id="updateById" parameterType="com.mall.domain.merchant.ProductInventory">
+        UPDATE product_inventory
+        SET merchant_id = #{merchantId},
+            sku = #{sku},
+            product_name = #{productName},
+            price = #{price},
+            quantity = #{quantity},
+            currency = #{currency},
+            update_time = #{updateTime},
+            version = #{version}
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM product_inventory
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectByMerchantIdAndSku" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM product_inventory
+        WHERE merchant_id = #{merchantId} AND sku = #{sku}
+    </select>
+
+    <select id="selectByMerchantIdAndSkuForUpdate" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM product_inventory
+        WHERE merchant_id = #{merchantId} AND sku = #{sku}
+        FOR UPDATE
+    </select>
+
+    <select id="selectByMerchantId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM product_inventory
+        WHERE merchant_id = #{merchantId}
+    </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM product_inventory
+    </select>
+
+</mapper>

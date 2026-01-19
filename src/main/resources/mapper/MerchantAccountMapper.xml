@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mall.mapper.MerchantAccountMapper">
+
+    <resultMap id="BaseResultMap" type="com.mall.domain.merchant.MerchantAccount">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="merchant_id" property="merchantId" jdbcType="BIGINT"/>
+        <result column="balance" property="balance" jdbcType="DECIMAL"/>
+        <result column="currency" property="currency" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="version" property="version" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, merchant_id, balance, currency, create_time, update_time, version
+    </sql>
+
+    <insert id="insert" parameterType="com.mall.domain.merchant.MerchantAccount" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO merchant_account (merchant_id, balance, currency, create_time, update_time, version)
+        VALUES (#{merchantId}, #{balance}, #{currency}, #{createTime}, #{updateTime}, #{version})
+    </insert>
+
+    <update id="updateById" parameterType="com.mall.domain.merchant.MerchantAccount">
+        UPDATE merchant_account
+        SET merchant_id = #{merchantId},
+            balance = #{balance},
+            currency = #{currency},
+            update_time = #{updateTime},
+            version = #{version}
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM merchant_account
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectByMerchantId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM merchant_account
+        WHERE merchant_id = #{merchantId}
+    </select>
+
+    <select id="selectByMerchantIdForUpdate" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM merchant_account
+        WHERE merchant_id = #{merchantId}
+        FOR UPDATE
+    </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM merchant_account
+    </select>
+
+</mapper>

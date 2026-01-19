@@ -1,0 +1,66 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+spring:
+  application:
+    name: mall-transaction-system
+
+  # 数据源配置
+  datasource:
+    url: jdbc:mysql://localhost:3306/mall_transaction_db?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
+    # HikariCP连接池配置
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+
+  # Redis配置
+  redis:
+    host: localhost
+    port: 6379
+    password: 
+    database: 0
+    timeout: 3000
+    lettuce:
+      pool:
+        max-active: 8
+        max-wait: -1
+        max-idle: 8
+        min-idle: 0
+
+# MyBatis配置
+mybatis:
+  # mapper.xml文件位置
+  mapper-locations: classpath:mapper/*.xml
+  # 实体类包路径
+  type-aliases-package: com.mall.domain
+  configuration:
+    # 开启驼峰命名转换
+    map-underscore-to-camel-case: true
+    # 开启二级缓存
+    cache-enabled: true
+    # 日志实现（生产环境可关闭）
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+# 定时任务配置
+settlement:
+  job:
+    # cron表达式：秒 分 时 日 月 周
+    # 0 0 2 * * ? 表示每天凌晨2点执行
+    cron: 0 0 2 * * ?
+
+# 日志配置
+logging:
+  level:
+    root: INFO
+    com.mall: DEBUG
+    org.springframework.web: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mall.mapper.UserAccountMapper">
+
+    <resultMap id="BaseResultMap" type="com.mall.domain.user.UserAccount">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="user_id" property="userId" jdbcType="BIGINT"/>
+        <result column="balance" property="balance" jdbcType="DECIMAL"/>
+        <result column="currency" property="currency" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="version" property="version" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, user_id, balance, currency, create_time, update_time, version
+    </sql>
+
+    <insert id="insert" parameterType="com.mall.domain.user.UserAccount" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO user_account (user_id, balance, currency, create_time, update_time, version)
+        VALUES (#{userId}, #{balance}, #{currency}, #{createTime}, #{updateTime}, #{version})
+    </insert>
+
+    <update id="updateById" parameterType="com.mall.domain.user.UserAccount">
+        UPDATE user_account
+        SET user_id = #{userId},
+            balance = #{balance},
+            currency = #{currency},
+            update_time = #{updateTime},
+            version = #{version}
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM user_account
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectByUserId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM user_account
+        WHERE user_id = #{userId}
+    </select>
+
+    <select id="selectByUserIdForUpdate" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM user_account
+        WHERE user_id = #{userId}
+        FOR UPDATE
+    </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM user_account
+    </select>
+
+</mapper>
